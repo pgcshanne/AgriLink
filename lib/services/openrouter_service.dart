@@ -42,22 +42,35 @@ CRITICAL STRICT RULES:
         {'role': 'user', 'content': userPrompt},
       ];
 
-      final response = await http.post(
-        Uri.parse('https://openrouter.ai/api/v1/chat/completions'),
-        headers: {
-          'Authorization': 'Bearer $apiKey',
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://agrilink.app',
-          'X-Title': 'AgriLink',
-        },
-        body: json.encode({
-          'model': 'openrouter/auto',
-          'messages': messages,
-          'temperature': 0.5,
-        }),
-      );
+      final keysToTry = [
+        apiKey,
+        OpenRouterService.defaultKey,
+      ].whereType<String>().where((k) => k.isNotEmpty).toSet().toList();
 
-      if (response.statusCode == 200) {
+      http.Response? response;
+      for (final key in keysToTry) {
+        try {
+          final res = await http.post(
+            Uri.parse('https://openrouter.ai/api/v1/chat/completions'),
+            headers: {
+              'Authorization': 'Bearer $key',
+              'Content-Type': 'application/json',
+            },
+            body: json.encode({
+              'model': 'openrouter/auto',
+              'messages': messages,
+              'temperature': 0.5,
+            }),
+          );
+          if (res.statusCode == 200) {
+            response = res;
+            break;
+          }
+        } catch (_) {}
+      }
+
+      if (response != null && response.statusCode == 200) {
+
         final data = json.decode(response.body);
         final choices = data['choices'] as List?;
         if (choices != null && choices.isNotEmpty) {

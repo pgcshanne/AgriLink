@@ -299,6 +299,11 @@ If MATCH:
 {"match": true, "detected_crop": "$cleanCropName", "disease": "[disease name for $cleanCropName, or 'Healthy']", "confidence": 92.5, "recuperative": ["[step 1]", "[step 2]", "[step 3]", "[step 4]"], "preventive": ["[step 1]", "[step 2]", "[step 3]", "[step 4]"]}
 ''';
 
+      final keysToTry = [
+        apiKey,
+        OpenRouterService.defaultKey,
+      ].whereType<String>().where((k) => k.isNotEmpty).toSet().toList();
+
       final modelsToTry = [
         'openrouter/auto',
         'google/gemini-2.0-flash-001',
@@ -308,40 +313,42 @@ If MATCH:
       ];
 
       http.Response? response;
-      for (final model in modelsToTry) {
-        try {
-          final res = await http.post(
-            Uri.parse('https://openrouter.ai/api/v1/chat/completions'),
-            headers: {
-              'Authorization': 'Bearer $apiKey',
-              'Content-Type': 'application/json',
-              'HTTP-Referer': 'https://agrilink.app',
-              'X-Title': 'AgriLink',
-            },
-            body: json.encode({
-              'model': model,
-              'messages': [
-                {
-                  'role': 'user',
-                  'content': [
-                    {'type': 'text', 'text': promptText},
-                    {
-                      'type': 'image_url',
-                      'image_url': {'url': 'data:image/jpeg;base64,$base64Image'}
-                    }
-                  ]
-                }
-              ],
-              'temperature': 0.1,
-            }),
-          );
+      for (final key in keysToTry) {
+        if (response != null && response.statusCode == 200) break;
+        for (final model in modelsToTry) {
+          try {
+            final res = await http.post(
+              Uri.parse('https://openrouter.ai/api/v1/chat/completions'),
+              headers: {
+                'Authorization': 'Bearer $key',
+                'Content-Type': 'application/json',
+              },
+              body: json.encode({
+                'model': model,
+                'messages': [
+                  {
+                    'role': 'user',
+                    'content': [
+                      {'type': 'text', 'text': promptText},
+                      {
+                        'type': 'image_url',
+                        'image_url': {'url': 'data:image/jpeg;base64,$base64Image'}
+                      }
+                    ]
+                  }
+                ],
+                'temperature': 0.1,
+              }),
+            );
 
-          if (res.statusCode == 200) {
-            response = res;
-            break;
-          }
-        } catch (_) {}
+            if (res.statusCode == 200) {
+              response = res;
+              break;
+            }
+          } catch (_) {}
+        }
       }
+
 
       List<String> aiRecuperative = [];
       List<String> aiPreventive = [];
