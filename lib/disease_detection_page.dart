@@ -1474,18 +1474,19 @@ If MATCH:
                       Container(
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: Colors.amber[50],
+                          color: const Color(0xFFFFF8E1),
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: Colors.amber[300]!),
+                          border: Border.all(color: const Color(0xFFFFD54F)),
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.info_outline,
-                              color: Colors.amber[800],
+                              color: Color(0xFFF57F17),
                               size: 20,
                             ),
+
                             const SizedBox(width: 10),
                             Expanded(
                               child: Column(
