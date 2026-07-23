@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:agrilink/drawer_menu.dart';
 import 'package:agrilink/services/api_service.dart';
 import 'package:agrilink/services/user_session.dart';
+import 'package:agrilink/services/app_translations.dart';
 
 class SeedExchangePage extends StatefulWidget {
   const SeedExchangePage({super.key});
@@ -16,7 +17,7 @@ class _SeedExchangePageState extends State<SeedExchangePage> {
   String _selectedCategory = 'All';
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
-  int? _currentUserId;
+  String? _currentUserId;
 
   @override
   void initState() {
@@ -87,53 +88,69 @@ class _SeedExchangePageState extends State<SeedExchangePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.menu, color: Colors.black),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-        title: const Text(
-          'Seed Exchange',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.green),
-            onPressed: _loadSeeds,
-          ),
-        ],
-      ),
-      drawer: const DrawerMenu(currentPage: 'Seed Exchange'),
-      body: RefreshIndicator(
-        onRefresh: _loadSeeds,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Seed Exchange Community',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Share and exchange seeds with fellow farmers',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-              ),
-              const SizedBox(height: 20),
+      backgroundColor: const Color(0xFFF4F6F4),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: _loadSeeds,
+          color: const Color(0xFF1B5E20),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Green Header ──────────────────────────
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF1B5E20),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(28),
+                      bottomRight: Radius.circular(28),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back, color: Colors.white),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          Text(
+                            AppTranslations.getText('seed_exchange'),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            icon: const Icon(Icons.refresh, color: Colors.white),
+                            onPressed: _loadSeeds,
+                          ),
+                        ],
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          'Share, trade, and request seeds with the Bogo City community.',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 13,
+                            ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
 
               // Search
               Row(
@@ -254,19 +271,23 @@ class _SeedExchangePageState extends State<SeedExchangePage> {
                     final seed = _seeds[index];
                     final isOwner =
                         _currentUserId != null &&
-                        int.parse(seed['user_id'].toString()) == _currentUserId;
+                        seed['user_id'].toString() == _currentUserId;
                     return _buildSeedCard(seed: seed, isOwner: isOwner);
                   },
                 ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
+    ),
+  ),
+),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddSeedDialog(),
-        backgroundColor: Colors.green[600],
-        icon: const Icon(Icons.add),
-        label: const Text('List Seeds'),
+        backgroundColor: const Color(0xFF1B5E20),
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: const Text('List Seeds', style: TextStyle(color: Colors.white)),
       ),
     );
   }

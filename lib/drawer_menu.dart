@@ -5,6 +5,7 @@ import 'disease_detection_page.dart';
 import 'weather_page.dart';
 import 'soil_analysis_page.dart';
 import 'seed_exchange_page.dart';
+import 'package:agrilink/services/app_translations.dart';
 import 'main.dart';
 
 class DrawerMenu extends StatefulWidget {
@@ -49,17 +50,17 @@ class _DrawerMenuState extends State<DrawerMenu> {
     final shouldLogout = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        title: Text(AppTranslations.getText('logout')),
+        content: Text(AppTranslations.getText('logout')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(AppTranslations.getText('cancel')),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Logout'),
+            child: Text(AppTranslations.getText('logout')),
           ),
         ],
       ),
@@ -127,32 +128,32 @@ class _DrawerMenuState extends State<DrawerMenu> {
               _buildDrawerItem(
                 context,
                 Icons.home,
+                AppTranslations.getText('home'),
                 'Home',
-                widget.currentPage == 'Home',
               ),
               _buildDrawerItem(
                 context,
                 Icons.camera_alt,
+                AppTranslations.getText('disease_detection'),
                 'Disease Detection',
-                widget.currentPage == 'Disease Detection',
               ),
               _buildDrawerItem(
                 context,
                 Icons.wb_cloudy_outlined,
+                AppTranslations.getText('weather'),
                 'Weather',
-                widget.currentPage == 'Weather',
               ),
               _buildDrawerItem(
                 context,
                 Icons.science,
+                AppTranslations.getText('soil_analysis'),
                 'Soil Analysis',
-                widget.currentPage == 'Soil Analysis',
               ),
               _buildDrawerItem(
                 context,
                 Icons.swap_horiz,
+                AppTranslations.getText('seed_exchange'),
                 'Seed Exchange',
-                widget.currentPage == 'Seed Exchange',
               ),
 
               const Spacer(),
@@ -162,9 +163,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ListTile(
                   leading: const Icon(Icons.logout, color: Colors.white),
-                  title: const Text(
-                    'Logout',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  title: Text(
+                    AppTranslations.getText('logout'),
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   onTap: _logout,
                 ),
@@ -233,8 +234,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
     BuildContext context,
     IconData icon,
     String title,
-    bool isActive,
+    String pageKey,
   ) {
+    final isActive = widget.currentPage == pageKey;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
@@ -254,34 +256,34 @@ class _DrawerMenuState extends State<DrawerMenu> {
         onTap: () {
           Navigator.pop(context);
 
-          if (title == widget.currentPage) {
+          if (pageKey == widget.currentPage) {
             return;
           }
 
-          if (title == 'Home') {
+          if (pageKey == 'Home') {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
+              MaterialPageRoute(builder: (context) => const MainScaffold()),
               (route) => false,
             );
-          } else if (title == 'Disease Detection') {
+          } else if (pageKey == 'Disease Detection') {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => const DiseaseDetectionPage(),
               ),
             );
-          } else if (title == 'Weather') {
+          } else if (pageKey == 'Weather') {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const WeatherPage()),
             );
-          } else if (title == 'Soil Analysis') {
+          } else if (pageKey == 'Soil Analysis') {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => SoilAnalysisPage()),
+              MaterialPageRoute(builder: (context) => const SoilAnalysisPage()),
             );
-          } else if (title == 'Seed Exchange') {
+          } else if (pageKey == 'Seed Exchange') {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const SeedExchangePage()),
