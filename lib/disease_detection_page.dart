@@ -1307,6 +1307,42 @@ If MATCH:
                                       Text(
                                         'confidence',
                                         style: TextStyle(
+                                          fontSize: 10,
+                                          color: _confidenceColor(_confidence),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+
+                      // ── Disease & Pathogen / Plant Health Overview Box ──
+                      Builder(builder: (context) {
+                        final isHealthy = _detectedDisease.toLowerCase() == 'healthy';
+                        if (isHealthy) {
+                          return Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE8F5E9), // Light green background for healthy plant
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: const Color(0xFF81C784), width: 1.2),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.verified, color: Color(0xFF2E7D32), size: 22),
+                                    const SizedBox(width: 8),
+                                    const Expanded(
+                                      child: Text(
+                                        'Plant Health & Vigor Overview',
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15,
                                           color: Color(0xFF2E7D32),
@@ -1343,14 +1379,14 @@ If MATCH:
                                   style: TextStyle(fontSize: 12.5, color: Colors.black87, height: 1.4),
                                 ),
                                 const SizedBox(height: 8),
-                                Row(
+                                const Row(
                                   children: [
-                                    const Icon(Icons.check_circle_outline, size: 16, color: Color(0xFF2E7D32)),
-                                    const SizedBox(width: 4),
+                                    Icon(Icons.check_circle_outline, size: 16, color: Color(0xFF2E7D32)),
+                                    SizedBox(width: 4),
                                     Expanded(
                                       child: Text(
                                         'Health Status: Optimal — Crop in great condition!',
-                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
+                                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
                                       ),
                                     ),
                                   ],
