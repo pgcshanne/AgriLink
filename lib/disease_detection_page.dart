@@ -640,7 +640,26 @@ If MATCH:
     final d = disease.toLowerCase();
     final c = crop.toLowerCase();
 
+    // 0. HEALTHY CROP
+    if (d.contains('healthy')) {
+      return {
+        'recuperative': [
+          'Maintain consistent soil-level irrigation early morning; keep foliage completely dry.',
+          'Apply balanced organic compost or 14-14-14 NPK fertilizer every 3–4 weeks to sustain vigor.',
+          'Keep crop rows weed-free to eliminate pest and disease vector harborage.',
+          'Ensure optimal sunlight exposure and soil aeration around plant bases.',
+        ],
+        'preventive': [
+          'Inspect foliage twice weekly for early signs of spot formation or chlorosis.',
+          'Maintain adequate planting distance for maximum canopy ventilation.',
+          'Disinfect pruning tools with 70% alcohol solution between uses.',
+          'Practice seasonal crop rotation after harvest to preserve soil health.',
+        ],
+      };
+    }
+
     // 1. TOMATO (Kamatis)
+
     if (c.contains('tomato') || c.contains('kamatis') || d.contains('tomato')) {
       return {
         'recuperative': [
@@ -1288,119 +1307,166 @@ If MATCH:
                                       Text(
                                         'confidence',
                                         style: TextStyle(
-                                          fontSize: 10,
-                                          color: _confidenceColor(_confidence),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                          color: Color(0xFF2E7D32),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Current Foliage Condition:',
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[800]),
+                                ),
+                                const Text(
+                                  'Healthy Foliage — No active disease symptoms detected.',
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF2E7D32)),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Optimal Growth Requirements for $_cropName:',
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[800]),
+                                ),
+                                const Text(
+                                  'Maintain consistent soil-level irrigation, 6+ hours of sunlight daily, and regular organic NPK fertilization.',
+                                  style: TextStyle(fontSize: 12.5, color: Colors.black87, height: 1.4),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Routine Care & Surveillance:',
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[800]),
+                                ),
+                                const Text(
+                                  'Inspect lower leaves twice weekly during wet conditions. Maintain good weed control and adequate row spacing.',
+                                  style: TextStyle(fontSize: 12.5, color: Colors.black87, height: 1.4),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.check_circle_outline, size: 16, color: Color(0xFF2E7D32)),
+                                    const SizedBox(width: 4),
+                                    Expanded(
+                                      child: Text(
+                                        'Health Status: Optimal — Crop in great condition!',
+                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-
-                      // ── Disease & Pathogen Overview Box ──
-                      Builder(builder: (context) {
-                        final details = _getDiseaseDetails(_detectedDisease, _cropName);
-                        return Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFF8E1), // Warm amber background
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: const Color(0xFFFFB300), width: 1.2),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.coronavirus_outlined, color: Colors.amber[900], size: 22),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      'Disease & Pathogen Overview',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        color: Colors.amber[900],
+                          );
+                        } else {
+                          final details = _getDiseaseDetails(_detectedDisease, _cropName);
+                          return Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFF8E1), // Warm amber background
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: const Color(0xFFFFB300), width: 1.2),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.coronavirus_outlined, color: Colors.amber[900], size: 22),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'Disease & Pathogen Overview',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                          color: Colors.amber[900],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Possible Disease Identification:',
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[800]),
-                              ),
-                              Text(
-                                details['name']!,
-                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFFB71C1C)),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Primary Cause & Environmental Trigger:',
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[800]),
-                              ),
-                              Text(
-                                details['cause']!,
-                                style: const TextStyle(fontSize: 12.5, color: Colors.black87, height: 1.4),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Key Symptoms & Visual Markers:',
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[800]),
-                              ),
-                              Text(
-                                details['symptoms']!,
-                                style: const TextStyle(fontSize: 12.5, color: Colors.black87, height: 1.4),
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Icon(Icons.error_outline, size: 16, color: Colors.red[800]),
-                                  const SizedBox(width: 4),
-                                  Expanded(
-                                    child: Text(
-                                      'Severity Assessment: ${details['severity']}',
-                                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.red[900]),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Possible Disease Identification:',
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[800]),
+                                ),
+                                Text(
+                                  details['name']!,
+                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFFB71C1C)),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Primary Cause & Environmental Trigger:',
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[800]),
+                                ),
+                                Text(
+                                  details['cause']!,
+                                  style: const TextStyle(fontSize: 12.5, color: Colors.black87, height: 1.4),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Key Symptoms & Visual Markers:',
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[800]),
+                                ),
+                                Text(
+                                  details['symptoms']!,
+                                  style: const TextStyle(fontSize: 12.5, color: Colors.black87, height: 1.4),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Icon(Icons.error_outline, size: 16, color: Colors.red[800]),
+                                    const SizedBox(width: 4),
+                                    Expanded(
+                                      child: Text(
+                                        'Severity Assessment: ${details['severity']}',
+                                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.red[900]),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }),
+                      const SizedBox(height: 14),
+
+                      // Recuperative / Maintenance Recommendations
+                      Builder(builder: (context) {
+                        final isHealthy = _detectedDisease.toLowerCase() == 'healthy';
+                        final recs = _recuperativeRecs.isNotEmpty
+                            ? _recuperativeRecs
+                            : _getRecommendationsForCropAndDisease(_detectedDisease, _cropName)['recuperative']!;
+
+                        return _buildRecommendationCard(
+                          title: isHealthy ? 'Health Maintenance Actions' : 'Recuperative Recommendations',
+                          subtitle: isHealthy ? 'How to maintain $_cropName optimal vigor & yield' : 'What to do NOW to treat $_cropName',
+                          icon: isHealthy ? Icons.eco_outlined : Icons.healing,
+                          color: isHealthy ? const Color(0xFF2E7D32) : const Color(0xFFBF360C),
+                          bgColor: isHealthy ? const Color(0xFFE8F5E9) : const Color(0xFFFBE9E7),
+                          recommendations: recs,
                         );
                       }),
                       const SizedBox(height: 14),
 
-                      // Recuperative Recommendations
-                      _buildRecommendationCard(
-                        title: 'Recuperative Recommendations',
-                        subtitle: 'What to do NOW to treat $_cropName',
-                        icon: Icons.healing,
-                        color: const Color(0xFFBF360C),
-                        bgColor: const Color(0xFFFBE9E7),
-                        recommendations: _recuperativeRecs.isNotEmpty
-                            ? _recuperativeRecs
-                            : _getRecommendationsForCropAndDisease(_detectedDisease, _cropName)['recuperative']!,
-                      ),
-                      const SizedBox(height: 14),
-
                       // Preventive Recommendations
-                      _buildRecommendationCard(
-                        title: 'Preventive Recommendations',
-                        subtitle: 'How to avoid recurrence in future $_cropName planting',
-                        icon: Icons.shield_outlined,
-                        color: const Color(0xFF1565C0),
-                        bgColor: const Color(0xFFE3F2FD),
-                        recommendations: _preventiveRecs.isNotEmpty
+                      Builder(builder: (context) {
+                        final isHealthy = _detectedDisease.toLowerCase() == 'healthy';
+                        final recs = _preventiveRecs.isNotEmpty
                             ? _preventiveRecs
-                            : _getRecommendationsForCropAndDisease(_detectedDisease, _cropName)['preventive']!,
-                      ),
+                            : _getRecommendationsForCropAndDisease(_detectedDisease, _cropName)['preventive']!;
+
+                        return _buildRecommendationCard(
+                          title: isHealthy ? 'Preventive Care Guidelines' : 'Preventive Recommendations',
+                          subtitle: isHealthy ? 'Routine steps to keep $_cropName disease-free' : 'How to avoid recurrence in future $_cropName planting',
+                          icon: Icons.shield_outlined,
+                          color: const Color(0xFF1565C0),
+                          bgColor: const Color(0xFFE3F2FD),
+                          recommendations: recs,
+                        );
+                      }),
                       const SizedBox(height: 14),
 
 
